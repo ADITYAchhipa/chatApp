@@ -13,10 +13,9 @@ import messageRouter from "./routes/messageRoutes.js";
 import { connectDB } from "./lib/db.js";
 import http from "http";
 
+
 const app = express();
 const PORT = process.env.PORT;
-
-const __dirname = path.resolve();
 
 app.use(express.json({limit:"4mb"}))
 
@@ -46,12 +45,11 @@ io.on("connection",(socket)=>{
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "*",
     credentials: true, // allow frontend to send cookies
   })
 );
 
-app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
@@ -67,8 +65,15 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
+if(process.env.NODE_ENV !== "production"){
 
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  connectDB();
-});
+  server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    connectDB();
+  });
+
+
+}
+
+
+export default server
