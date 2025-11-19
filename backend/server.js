@@ -46,7 +46,7 @@ io.on("connection", (socket) => {
 
 app.use(
   cors({
-    origin: "*",
+    origin: true,
     credentials: true
   })
 );

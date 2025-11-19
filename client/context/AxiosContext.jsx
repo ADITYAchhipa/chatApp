@@ -1,11 +1,10 @@
 import { createContext } from "react";
 import axios from "axios";
-
 export const AxiosContext = createContext();
 
 export const AxiosProvider = ({children})=>{
     const axiosInstance = axios.create({
-        baseURL: "http://localhost:5001",  // ⭐ your template
+        baseURL: import.meta.env.VITE_BACKEND_URL,  // ⭐ your template
         withCredentials: true,             // important if working with cookies (JWT)
         });
          const value={
