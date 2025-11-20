@@ -2,6 +2,8 @@ import { upsertStreamUser } from "../lib/stream.js";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 export async function signup(req, res) {
   const { email, password, fullName } = req.body;
 
@@ -52,9 +54,9 @@ export async function signup(req, res) {
 
     res.cookie("jwt", token, {
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      httpOnly: true, // prevent XSS attacks,
-      sameSite: "strict", // prevent CSRF attacks
-      secure: process.env.NODE_ENV === "production",
+      httpOnly: true, // prevent XSS attacks
+      sameSite: isProduction ? "none" : "lax", // allow cross-site cookies in production
+      secure: isProduction,
     });
 
     res.status(201).json({ success: true, message: "Signup successful", user: newUser });
@@ -79,17 +81,17 @@ export async function login(req, res) {
     if (!isPasswordCorrect) return res.status(401).json({ message: "Invalid email or password" });
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, {
-      expiresIn: "7d",
-    });
+  expiresIn: "7d",
+});
 
-    res.cookie("jwt", token, {
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      httpOnly: true, // prevent XSS attacks,
-      sameSite: "strict", // prevent CSRF attacks
-      secure: process.env.NODE_ENV === "production",
-    });
+res.cookie("jwt", token, {
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+  httpOnly: true, // prevent XSS attacks
+  sameSite: isProduction ? "none" : "lax", // allow cross-site cookies in production
+  secure: isProduction,
+});
 
-    res.status(200).json({ success: true, message: "Login successful", user });
+res.status(200).json({ success: true, message: "Login successful", user });
   } catch (error) {
     console.log("Error in login controller", error.message);
     res.status(500).json({ message: "Internal Server Error" });
