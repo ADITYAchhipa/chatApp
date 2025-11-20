@@ -19,7 +19,7 @@ export const ChatProvider = ({children}) => {
 
     const getUsers = async()=>{
         try{
-            const {data} = await axios.get("/api/messages/users")
+            const {data} = await axios.get("/messages/users")
             // console.log(data.success)
             if(data.success){
                 setUsers(data.users)
@@ -37,7 +37,7 @@ export const ChatProvider = ({children}) => {
 
     const getMessages = async (userId)=>{
         try{
-            const {data} = await axios.get(`/api/messages/${userId}`);
+            const {data} = await axios.get(`/messages/${userId}`);
             if(data.success){
                 setMessages(data.messages)
             }
@@ -53,7 +53,7 @@ export const ChatProvider = ({children}) => {
     const sendMessage = async (messageData)=>
     {
         try{
-            const{data} = await  axios.post(`/api/messages/send/${selectedUser._id}`,messageData)
+            const{data} = await  axios.post(`/messages/send/${selectedUser._id}`,messageData)
             if(data.success){
                 setMessages((prevMessages)=>[...prevMessages,data.newMessage])
             }else{
@@ -74,7 +74,7 @@ export const ChatProvider = ({children}) => {
             if(selectedUser && newMessage.senderId === selectedUser._id){
                 newMessage.seen=true
                 setMessages((prevMessages)=>[...prevMessages,newMessage])
-                axios.put(`/api/messages/mark/${newMessage._id}`)
+                axios.put(`/messages/mark/${newMessage._id}`)
             }else{
                 setUnseenMessages((prevUnseenMessages)=>({
                     ...prevUnseenMessages,[newMessage.senderId]:(prevUnseenMessages[newMessage.senderId] || 0)+1

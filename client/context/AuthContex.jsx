@@ -18,7 +18,7 @@ export const AuthProvider = ({children})=>{
 
     const checkAuth = async () =>{
         try{
-            const {data} =await axios.get("/api/auth/me")
+            const {data} =await axios.get("/auth/me")
          
 
             if(data.success){
