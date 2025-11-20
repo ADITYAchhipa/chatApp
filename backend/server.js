@@ -66,10 +66,13 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
+// Always connect to the database, both in development and in production (e.g. Vercel)
+connectDB();
+
+// Only start the HTTP listener when not running in a serverless/production environment
 if (process.env.NODE_ENV !== "production") {
   server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
-    connectDB();
   });
 }
 
